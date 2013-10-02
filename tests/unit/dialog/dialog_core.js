@@ -40,7 +40,7 @@ test("widget method", function() {
 });
 
 asyncTest( "focus tabbable", function() {
-	expect( 5 );
+	expect( 6 );
 	var element,
 		options = {
 			buttons: [{
@@ -59,43 +59,57 @@ asyncTest( "focus tabbable", function() {
 	}
 
 	function step1() {
-		checkFocus( "<div><input><input autofocus></div>", options, function() {
-			equal( document.activeElement, element.find( "input" )[ 1 ],
-				"1. first element inside the dialog matching [autofocus]" );
-		}, step2 );
+		element = $( "<div><input><input>" ).dialog( options );
+		setTimeout(function() {
+			element.find( "input:last" ).focus().blur();
+			element.dialog( "instance" )._focusTabbable();
+			setTimeout(function() {
+				equal( document.activeElement, element.find( "input" )[ 1 ],
+					"1. an element that was focused previously." );
+				element.remove();
+				setTimeout( step2 );
+			});
+		});
 	}
 
 	function step2() {
-		checkFocus( "<div><input><input></div>", options, function() {
-			equal( document.activeElement, element.find( "input" )[ 0 ],
-				"2. tabbable element inside the content element" );
+		checkFocus( "<div><input><input autofocus></div>", options, function() {
+			equal( document.activeElement, element.find( "input" )[ 1 ],
+				"2. first element inside the dialog matching [autofocus]" );
 		}, step3 );
 	}
 
 	function step3() {
-		checkFocus( "<div>text</div>", options, function() {
-			equal( document.activeElement,
-				element.dialog( "widget" ).find( ".ui-dialog-buttonpane button" )[ 0 ],
-				"3. tabbable element inside the buttonpane" );
+		checkFocus( "<div><input><input></div>", options, function() {
+			equal( document.activeElement, element.find( "input" )[ 0 ],
+				"3. tabbable element inside the content element" );
 		}, step4 );
 	}
 
 	function step4() {
-		checkFocus( "<div>text</div>", {}, function() {
+		checkFocus( "<div>text</div>", options, function() {
 			equal( document.activeElement,
-				element.dialog( "widget" ).find( ".ui-dialog-titlebar .ui-dialog-titlebar-close" )[ 0 ],
-				"4. the close button" );
+				element.dialog( "widget" ).find( ".ui-dialog-buttonpane button" )[ 0 ],
+				"4. tabbable element inside the buttonpane" );
 		}, step5 );
 	}
 
 	function step5() {
+		checkFocus( "<div>text</div>", {}, function() {
+			equal( document.activeElement,
+				element.dialog( "widget" ).find( ".ui-dialog-titlebar .ui-dialog-titlebar-close" )[ 0 ],
+				"5. the close button" );
+		}, step6 );
+	}
+
+	function step6() {
 		element = $( "<div>text</div>" ).dialog({
 			autoOpen: false
 		});
 		element.dialog( "widget" ).find( ".ui-dialog-titlebar-close" ).hide();
 		element.dialog( "open" );
 		setTimeout(function() {
-			equal( document.activeElement, element.parent()[ 0 ], "5. the dialog itself" );
+			equal( document.activeElement, element.parent()[ 0 ], "6. the dialog itself" );
 			element.remove();
 			start();
 		});
