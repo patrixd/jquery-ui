@@ -266,16 +266,16 @@ $.widget( "ui.dialog", {
 		// 6. The dialog itself
 		var hasFocus = this._focusedElement;
 		if ( !hasFocus ) {
-			hasFocus = this.element.find("[autofocus]");
+			hasFocus = this.element.find( "[autofocus]" );
 		}
 		if ( !hasFocus.length ) {
-			hasFocus = this.element.find(":tabbable");
+			hasFocus = this.element.find( ":tabbable" );
 		}
 		if ( !hasFocus.length ) {
-			hasFocus = this.uiDialogButtonPane.find(":tabbable");
+			hasFocus = this.uiDialogButtonPane.find( ":tabbable" );
 		}
 		if ( !hasFocus.length ) {
-			hasFocus = this.uiDialogTitlebarClose.filter(":tabbable");
+			hasFocus = this.uiDialogTitlebarClose.filter( ":tabbable" );
 		}
 		if ( !hasFocus.length ) {
 			hasFocus = this.uiDialog;
